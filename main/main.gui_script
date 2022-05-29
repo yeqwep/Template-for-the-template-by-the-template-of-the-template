@@ -21,10 +21,10 @@ local function img_update(target_template,target_data)
 	gui.play_flipbook(node, img)
 end
 local function text_update(target_template,target_data)
-	for i, var in ipairs(TEXT_NODES) do
-		local n = "template/" .. var
+	for i, name in ipairs(TEXT_NODES) do
+		local n = "template/" .. name
 		local node = target_template[n]
-		local text = target_data[var]
+		local text = target_data[name]
 		gui.set_text(node, text)
 	end
 end
