@@ -37,7 +37,7 @@ local function write(self, num)
 end
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-local function template_clone(scroll)
+local function template_clone()
 	local templates = {}
 	local pos = vmath.vector3(0,0,0)
 	gui.set_enabled(gui.get_node('template/box'),false)
@@ -68,7 +68,7 @@ end
 -- default
 ------------------------------------------------------------------------------------------------
 function init(self)
-	self.templates = template_clone(self)
+	self.templates = template_clone()
 	update_data(self)
 	timer.delay(3,true,update_data)
 	msg.post(".", "acquire_input_focus")
