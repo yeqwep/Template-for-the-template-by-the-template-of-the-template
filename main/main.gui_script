@@ -8,52 +8,50 @@ local data = {
 local PITCH = 110
 
 local IMG_NODE = "img"
-local TEXTS = {"param1","param2","param3","param4","param5"}
+local TEXT_NODES = {"param1","param2","param3","param4","param5"}
 
 ------------------------------------------------------------------------------------------------
+-- update view
 ------------------------------------------------------------------------------------------------
-local function img_update(target,num)
-	pprint(target)
+local function img_update(target_template,target_data)
 	local n = "template/" .. IMG_NODE
-	local node = target[n]
-	print(node)
-	local img = data[num][IMG_NODE]
+	local node = target_template[n]
+	local img = target_data[IMG_NODE]
 	gui.set_texture(node, "icon")
 	gui.play_flipbook(node, img)
 end
-local function text_update(target,num)
-	for i, var in ipairs(TEXTS) do
+local function text_update(target_template,target_data)
+	for i, var in ipairs(TEXT_NODES) do
 		local n = "template/" .. var
-		local id = target[n]
-		local text = data[num][var]
-		gui.set_text(id, text)
+		local node = target_template[n]
+		local text = target_data[var]
+		gui.set_text(node, text)
 	end
 end
-local function write(self, num)
-	local target = self.templates[num]
-	
-	img_update(target,num)
-	text_update(target,num)
+local function write(target_template, target_data)
+	img_update(target_template,target_data)
+	text_update(target_template,target_data)
 end
 ------------------------------------------------------------------------------------------------
+-- init
 ------------------------------------------------------------------------------------------------
 local function template_clone()
 	local templates = {}
 	local pos = vmath.vector3(0,0,0)
 	gui.set_enabled(gui.get_node('template/box'),false)
 	for i=1, #data do
-		local table = gui.clone_tree(gui.get_node('template/box'))
-		templates[i] = table
-		local node = table["template/box"]
+		local node_table = gui.clone_tree(gui.get_node('template/box'))
+		templates[i] = node_table
+		local node = node_table["template/box"]
 		pos.y = PITCH * (i-1)
 		gui.set_position(node,pos)
 		gui.set_enabled(node,true)
 	end
-	pos.y = -1000
-	gui.set_position(gui.get_node('template/box'),pos)
+	gui.delete_node(gui.get_node('template/box'))
 	return templates
 end
 ------------------------------------------------------------------------------------------------
+-- update data
 ------------------------------------------------------------------------------------------------
 local function update_data(self)
 	for i=1,#data do
@@ -61,7 +59,7 @@ local function update_data(self)
 		data[i]["param3"] = math.random(-90,90)
 		data[i]["param4"] = math.random(50,60)
 		data[i]["param5"] = math.random(1,10)
-		write(self, i)
+		write(self.templates[i], data[i])
 	end
 end
 ------------------------------------------------------------------------------------------------
